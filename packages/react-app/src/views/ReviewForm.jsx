@@ -35,6 +35,7 @@ export default function ReviewForm({
     const [assetHash, setAssetHash] = useState("0x46d15ccfc1375e658fd0d59c1be93ac5b7350b43");
     const [assetId, setAssetId] = useState("171");
     const [owned, setOwned] = useState(false);
+    const [chainId, setChainId] = useState("1");
 
     return (
         <div>
@@ -89,6 +90,15 @@ export default function ReviewForm({
                             Checkbox
                         </Checkbox>
                     </Form.Item>
+                    <Form.Item label="Chain Id">
+                        <Input
+                            onChange={value => {
+                                console.log("chainid: ", value);
+                                setChainId(value);
+                            }}
+                            value={chainId}
+                        />
+                    </Form.Item>
 
                     <Button
                         style={{ marginTop: 8 }}
@@ -102,6 +112,7 @@ export default function ReviewForm({
                                 assetHash,
                                 assetId,
                                 rating,
+                                chainId,
                             );
                             const result = tx(createTx, update => {
                                 console.log("📡 Transaction Update:", update);
