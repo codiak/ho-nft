@@ -50,6 +50,12 @@ module.exports = {
     enabled: true,
   },
 
+  // Tenderly debugging/analytics config
+  tenderly: {
+    username: "cybercody",
+    project: "ho-nft",
+  },
+
   // if you want to deploy to a testnet, mainnet, or xdai, you will need to configure:
   // 1. An Infura key (or similar)
   // 2. A private key for the deployer

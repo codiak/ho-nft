@@ -14,10 +14,10 @@ const localChainId = "31337";
 
 module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deploy } = deployments;
-  const { deployer } = await getNamedAccounts();
+  const { deployer, signer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy("HumbleOpinion", {
+  const deployData = await deploy("HumbleOpinion", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
     // args: [ "Hello", ethers.utils.parseEther("1.5") ],
@@ -25,12 +25,15 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     waitConfirmations: 5,
   });
 
+  const address = deployData.address;
+  console.log(deployData);
   // Getting a previously deployed contract
-  const HumbleOpinion = await ethers.getContract("HumbleOpinion", deployer);
+  // eslint-disable-next-line no-unused-vars
+  const HumbleOpinion = ethers.getContractAt("HumbleOpinion", address, signer);
   /*  await HumbleOpinion.create(....);
   
-    // To take ownership of HumbleOpinion using the ownable library uncomment next line and add the 
-    // address you want to be the owner. 
+    // To take ownership of HumbleOpinion using the ownable library uncomment next line and add the
+    // address you want to be the owner.
     
     await HumbleOpinion.transferOwnership(
       "ADDRESS_HERE"
