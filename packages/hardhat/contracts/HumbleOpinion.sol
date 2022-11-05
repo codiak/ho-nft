@@ -32,7 +32,7 @@ contract HONFTReviews {
       reviews.push(newReview);
   }
 
-  function get(uint _index) external returns(uint id, string calldata text, uint rating, string calldata assetHash, address author) {
+  function get(uint _index) external returns(uint id, string memory text, uint rating, string memory assetHash, address author) {
       Review memory at_i = reviews[_index];
       return (at_i.id, at_i.text, at_i.rating, at_i.assetHash, at_i.author);
   }
