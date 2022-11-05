@@ -1,0 +1,23 @@
+{
+    "name": "ho-nft-extension",
+    "description": "My humble opionion of this NFT ...",
+    "version": "1.0",
+    "manifest_version": 3,
+    "action": {
+        "default_icon": "icon-34.png",
+        "default_title": "HO NFT"
+    },
+    "icons": {
+        "128": "icon-128.png"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://*.opensea.io/*"
+            ],
+            "js": [
+                "content.js"
+            ]
+        }
+    ]
+}

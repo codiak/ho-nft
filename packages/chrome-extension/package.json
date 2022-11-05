@@ -1,0 +1,26 @@
+{
+  "name": "ho-nft-extension",
+  "version": "1.0.0",
+  "description": "My humble opionion of this NFT ...",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack --watch --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "css-loader": "^6.7.1",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.9",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
+    "babel-loader": "^8.2.4",
+    "copy-webpack-plugin": "^10.2.4",
+    "html-webpack-plugin": "^5.5.0"
+  }
+}
