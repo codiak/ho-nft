@@ -1,4 +1,18 @@
-import { Button, Card, Col, DatePicker, Divider, Form, Input, Progress, Row, Slider, Spin, Switch } from "antd";
+import {
+    Button,
+    Card,
+    Checkbox,
+    Col,
+    DatePicker,
+    Divider,
+    Form,
+    Input,
+    Progress,
+    Row,
+    Slider,
+    Spin,
+    Switch,
+} from "antd";
 import React, { useState } from "react";
 import { utils } from "ethers";
 import { SyncOutlined } from "@ant-design/icons";
@@ -16,8 +30,7 @@ export default function ReviewForm({
     readContracts,
     writeContracts,
 }) {
-    // string memory _text, bool _owned, string memory _assetHash, uint rating
-    const [newReview, setNewReview] = useState("What do you think about this NFT?");
+    const [newReview, setNewReview] = useState("");
     const [rating, setRating] = useState(3);
     // This might actually be the collection hash? Assets seem to have simple ids
     const [assetHash, setAssetHash] = useState("0x46d15ccfc1375e658fd0d59c1be93ac5b7350b43");
@@ -38,7 +51,7 @@ export default function ReviewForm({
                             onChange={e => {
                                 setNewReview(e.target.value);
                             }}
-                            placeholder={newReview}
+                            placeholder={"What do you think about this NFT?"}
                         />
                     </Form.Item>
                     <Form.Item label="Rating">
@@ -58,10 +71,16 @@ export default function ReviewForm({
                     </Form.Item>
                     <Form.Item label="Asset Hash">
                         <Input
-                            onChange={e => {
-                                setAssetHash(e.target.value);
+                            onChange={value => {
+                                setAssetHash(value);
                             }}
+                            value={assetHash}
                         />
+                    </Form.Item>
+                    <Form.Item label="Are you an owner?">
+                        <Checkbox onChange={value => setOwned(value)} value={owned}>
+                            Checkbox
+                        </Checkbox>
                     </Form.Item>
 
                     <Button
@@ -69,7 +88,9 @@ export default function ReviewForm({
                         onClick={async () => {
                             /* look how you call setPurpose on your contract: */
                             /* notice how you pass a call back for tx updates too */
-                            const result = tx(writeContracts.YourContract.setPurpose(newReview), update => {
+                            // string memory _text, bool _owned, string memory _assetHash, uint rating
+                            const createTx = writeContracts.HumbleOpinion.create(newReview, owned, assetHash, rating);
+                            const result = tx(createTx, update => {
                                 console.log("📡 Transaction Update:", update);
                                 if (update && (update.status === "confirmed" || update.status === 1)) {
                                     console.log(" 🍾 Transaction " + update.hash + " finished!");
@@ -115,7 +136,7 @@ export default function ReviewForm({
                 <Divider />
                 Your Contract Address:
                 <Address
-                    address={readContracts && readContracts.YourContract ? readContracts.YourContract.address : null}
+                    address={readContracts && readContracts.HumbleOpinion ? readContracts.HumbleOpinion.address : null}
                     ensProvider={mainnetProvider}
                     fontSize={16}
                 />
@@ -124,7 +145,7 @@ export default function ReviewForm({
                     <Button
                         onClick={() => {
                             /* look how you call setPurpose on your contract: */
-                            tx(writeContracts.YourContract.setPurpose("🍻 Cheers"));
+                            tx(writeContracts.HumbleOpinion.setPurpose("🍻 Cheers"));
                         }}
                     >
                         Set Purpose to &quot;🍻 Cheers&quot;
@@ -138,7 +159,7 @@ export default function ReviewForm({
               here we are sending value straight to the contract's address:
             */
                             tx({
-                                to: writeContracts.YourContract.address,
+                                to: writeContracts.HumbleOpinion.address,
                                 value: utils.parseEther("0.001"),
                             });
                             /* this should throw an error about "no fallback nor receive function" until you add it */
@@ -152,7 +173,7 @@ export default function ReviewForm({
                         onClick={() => {
                             /* look how we call setPurpose AND send some value along */
                             tx(
-                                writeContracts.YourContract.setPurpose("💵 Paying for this one!", {
+                                writeContracts.HumbleOpinion.setPurpose("💵 Paying for this one!", {
                                     value: utils.parseEther("0.001"),
                                 }),
                             );
@@ -167,9 +188,9 @@ export default function ReviewForm({
                         onClick={() => {
                             /* you can also just craft a transaction and send it to the tx() transactor */
                             tx({
-                                to: writeContracts.YourContract.address,
+                                to: writeContracts.HumbleOpinion.address,
                                 value: utils.parseEther("0.001"),
-                                data: writeContracts.YourContract.interface.encodeFunctionData("setPurpose(string)", [
+                                data: writeContracts.HumbleOpinion.interface.encodeFunctionData("setPurpose(string)", [
                                     "🤓 Whoa so 1337!",
                                 ]),
                             });
@@ -183,12 +204,12 @@ export default function ReviewForm({
 
             {/*
         📑 Maybe display a list of events?
-          (uncomment the event and emit line in YourContract.sol! )
+          (uncomment the event and emit line in HumbleOpinion.sol! )
       */}
             <Events
                 contracts={readContracts}
-                contractName="YourContract"
-                eventName="SetPurpose"
+                contractName="HumbleOpinion"
+                eventName="NewReview"
                 localProvider={localProvider}
                 mainnetProvider={mainnetProvider}
                 startBlock={1}
