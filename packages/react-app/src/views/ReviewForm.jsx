@@ -20,7 +20,6 @@ import { SyncOutlined } from "@ant-design/icons";
 import { Address, Balance, Events } from "../components";
 
 export default function ReviewForm({
-    purpose,
     address,
     mainnetProvider,
     localProvider,
@@ -34,6 +33,7 @@ export default function ReviewForm({
     const [rating, setRating] = useState(3);
     // This might actually be the collection hash? Assets seem to have simple ids
     const [assetHash, setAssetHash] = useState("0x46d15ccfc1375e658fd0d59c1be93ac5b7350b43");
+    const [assetId, setAssetId] = useState("171");
     const [owned, setOwned] = useState(false);
 
     return (
@@ -43,7 +43,6 @@ export default function ReviewForm({
       */}
             <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
                 <h2>Manual Review Form:</h2>
-                <h4>purpose: {purpose}</h4>
                 <Divider />
                 <div style={{ margin: 8 }}>
                     <Form.Item label="Review">
@@ -77,6 +76,14 @@ export default function ReviewForm({
                             value={assetHash}
                         />
                     </Form.Item>
+                    <Form.Item label="Asset Id">
+                        <Input
+                            onChange={value => {
+                                setAssetId(value);
+                            }}
+                            value={assetId}
+                        />
+                    </Form.Item>
                     <Form.Item label="Are you an owner?">
                         <Checkbox onChange={value => setOwned(value)} value={owned}>
                             Checkbox
@@ -89,7 +96,13 @@ export default function ReviewForm({
                             /* look how you call setPurpose on your contract: */
                             /* notice how you pass a call back for tx updates too */
                             // string memory _text, bool _owned, string memory _assetHash, uint rating
-                            const createTx = writeContracts.HumbleOpinion.create(newReview, owned, assetHash, rating);
+                            const createTx = writeContracts.HumbleOpinion.create(
+                                newReview,
+                                owned,
+                                assetHash,
+                                assetId,
+                                rating,
+                            );
                             const result = tx(createTx, update => {
                                 console.log("📡 Transaction Update:", update);
                                 if (update && (update.status === "confirmed" || update.status === 1)) {
