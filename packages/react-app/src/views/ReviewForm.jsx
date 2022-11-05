@@ -70,19 +70,17 @@ export default function ReviewForm({
                         </Row>
                     </Form.Item>
                     <Form.Item label="Asset Hash">
-                        <Input
-                            onChange={value => {
-                                setAssetHash(value);
-                            }}
+                        <Input onChange={e => setAssetHash(e.target.value)}
                             value={assetHash}
-                        />
+                            placeholder="0x123..." />
                     </Form.Item>
                     <Form.Item label="Asset Id">
                         <Input
-                            onChange={value => {
-                                setAssetId(value);
+                            onChange={e => {
+                                setAssetId(e.target.value);
                             }}
                             value={assetId}
+                            placeholder="123..."
                         />
                     </Form.Item>
                     <Form.Item label="Are you an owner?">
@@ -92,11 +90,9 @@ export default function ReviewForm({
                     </Form.Item>
                     <Form.Item label="Chain Id">
                         <Input
-                            onChange={value => {
-                                console.log("chainid: ", value);
-                                setChainId(value);
-                            }}
+                            onChange={e => setChainId(e.target.value)}
                             value={chainId}
+                            placeholder="1..."
                         />
                     </Form.Item>
 
