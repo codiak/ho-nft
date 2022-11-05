@@ -18,6 +18,7 @@ import { utils } from "ethers";
 import { SyncOutlined } from "@ant-design/icons";
 
 import { Address, Balance, Events } from "../components";
+import "antd/dist/antd.css";
 
 export default function ReviewForm({
     address,
@@ -70,9 +71,7 @@ export default function ReviewForm({
                         </Row>
                     </Form.Item>
                     <Form.Item label="Asset Hash">
-                        <Input onChange={e => setAssetHash(e.target.value)}
-                            value={assetHash}
-                            placeholder="0x123..." />
+                        <Input onChange={e => setAssetHash(e.target.value)} value={assetHash} placeholder="0x123..." />
                     </Form.Item>
                     <Form.Item label="Asset Id">
                         <Input
@@ -89,11 +88,7 @@ export default function ReviewForm({
                         </Checkbox>
                     </Form.Item>
                     <Form.Item label="Chain Id">
-                        <Input
-                            onChange={e => setChainId(e.target.value)}
-                            value={chainId}
-                            placeholder="1..."
-                        />
+                        <Input onChange={e => setChainId(e.target.value)} value={chainId} placeholder="1..." />
                     </Form.Item>
 
                     <Button

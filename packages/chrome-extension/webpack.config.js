@@ -32,12 +32,24 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         { from: "manifest.json", to: path.join(__dirname, "dist") },
+        { from: "src/css/antd.min.css",
+          to: path.join(__dirname, "dist"),
+          force: true 
+        },
         {
           from: "src/icons/icon-128.png",
           to: path.join(__dirname, "dist"),
         },
         {
+          from: "src/icons/icon-48.png",
+          to: path.join(__dirname, "dist"),
+        },
+        {
           from: "src/icons/icon-34.png",
+          to: path.join(__dirname, "dist"),
+        },
+        {
+          from: "src/icons/icon-256.png",
           to: path.join(__dirname, "dist"),
         },
       ],

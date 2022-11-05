@@ -1,5 +1,7 @@
 import React from "react";
 
+import { Form, Input } from "antd";
+
 const WriteReview = ({
   rows,
   cols,
@@ -38,6 +40,10 @@ const WriteReview = ({
 
   return (
     <>
+      {/* <style>
+        {require("../css/antd.min.css")}
+      </style> */}
+      {/* <link href="antd/dist/antd.css" rel="stylesheet" media="screen" /> */}
       <div style={{ padding: 20 }}>
         <textarea
           rows={rows}
@@ -46,6 +52,14 @@ const WriteReview = ({
           onChange={(event) => setFormattedContent(event.target.value)}
           value={content}
         />
+        <Form.Item label="Review">
+          <Input
+              onChange={e => {
+                  setNewReview(e.target.value);
+              }}
+              placeholder={"What do you think about this NFT?"}
+          />
+        </Form.Item>
         <p>
           {content.length}/{limit}
         </p>
