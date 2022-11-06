@@ -40,7 +40,7 @@ const injectReviewForm = async (address, id) => {
   // don't process if there are no reviews
   const fetchReviews = await fetchGReviews(chainId, address, id);
   console.log("fetched review: ", fetchReviews);
-  for (let i = 0; i < fetchReviews.length; i++) {
+  for (let i = 0; i < fetchReviews?.length; i++) {
     const review = fetchReviews[i];
     console.log("review: ", review);
     const reviewsHtml = buildReviewsHtml(review);
@@ -51,16 +51,15 @@ const injectReviewForm = async (address, id) => {
 
 const buildReviewsHtml = ({ createdAt, userName, sender, rating, review }) => {
   let html = `
-    <div class="Blockreact__Block-sc-1xf18x6-0 TradeStationreact__TimerContainer-sc-o1vm2f-1 elqhCm FFCYS TradeStation--header">
-      <div class="Blockreact__Block-sc-1xf18x6-0 Flexreact__Flex-sc-1twd32i-0 SpaceBetweenreact__SpaceBetween-sc-jjxyhg-0 jffCaG jYqxGr gJwgfT">
-        <div class="Blockreact__Block-sc-1xf18x6-0 Flexreact__Flex-sc-1twd32i-0 elqhCm jYqxGr">
-          <div display="inline" class="Blockreact__Block-sc-1xf18x6-0 iiEhTQ">
-            <span class="Blockreact__Block-sc-1xf18x6-0 Textreact__Text-sc-1w94ul3-0 gLefxh iZsJOf">${createdAt}&nbsp;&nbsp;${rating}</span>
-            <span class="Blockreact__Block-sc-1xf18x6-0 Textreact__Text-sc-1w94ul3-0 gLefxh iZsJOf"><a class="styles__StyledLink-sc-l6elh8-0 hubhNL Blockreact__Block-sc-1xf18x6-0 laCjUo AccountLink--ellipsis-overflow" href="${sender}">${userName}</a></span><br/></br/>
-            <span class="Blockreact__Block-sc-1xf18x6-0 Textreact__Text-sc-1w94ul3-0 gLefxh iZsJOf">${review}</span><br/><br/>
-          </div>
-        </div>
+    <div class="review-wrap" style="padding:0.5em;">
+      <div display="inline" class="Blockreact__Block-sc-1xf18x6-0 iiEhTQ">
+        <span class="row">Posted: <i>Today</i> &nbsp;&nbsp; Rating: ${"⭐".repeat(
+          rating
+        )}</span>
+        <span class="row"><a class="styles__StyledLink-sc-l6elh8-0 hubhNL Blockreact__Block-sc-1xf18x6-0 laCjUo AccountLink--ellipsis-overflow" href="${sender}"></a></span><br/></br/>
+        <span class="row" style="font-size: 15px; padding: 10px 0px;">${review}</span><br/><br/>
       </div>
+      <hr/
     </div>`;
   return html;
 };

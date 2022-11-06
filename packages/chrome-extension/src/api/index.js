@@ -24,8 +24,6 @@ const fetchGraphReviews = (chainId, address, id) => {
 };
 
 const fetchGReviews = async (chainId, address, id) => {
-  let a = "0x46d15ccfc1375e658fd0d59c1be93ac5b7350b43";
-  let i = 171;
   const review = await fetch(
     `https://api.thegraph.com/subgraphs/name/ameer-clara/honft-test`,
     {
@@ -33,7 +31,7 @@ const fetchGReviews = async (chainId, address, id) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         query: `{
-                        newReviews(assetHash: "${a}", assetId: ${i}) {
+                        newReviews(assetHash: "${address}", assetId: ${id}) {
                           id
                           sender
                           assetHash
@@ -47,7 +45,7 @@ const fetchGReviews = async (chainId, address, id) => {
   );
   //   console.log("review", await review.json());
 
-  return (await review.json()).data.newReviews;
+  return (await review.json())?.data?.newReviews;
 };
 
 export { fetchGReviews };
