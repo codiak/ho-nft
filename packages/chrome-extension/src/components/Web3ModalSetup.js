@@ -12,7 +12,9 @@ const walletLink = new WalletLink({
 });
 
 // WalletLink provider
-const walletLinkProvider = walletLink.makeWeb3Provider(`https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`, 1);
+// set for goerli
+const chainId = 5;
+const walletLinkProvider = walletLink.makeWeb3Provider(`https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_KEY}`, chainId);
 
 // Portis ID: 6255fb2b-58c8-433b-a2c9-62098c05ddc9
 /**
@@ -20,7 +22,7 @@ const walletLinkProvider = walletLink.makeWeb3Provider(`https://eth-mainnet.alch
 **/
 const web3ModalSetup = () =>
   new Web3Modal({
-    network: "mainnet", // Optional. If using WalletConnect on xDai, change network to "xdai" and add RPC info below for xDai chain.
+    network: "goerli", // Optional. If using WalletConnect on xDai, change network to "xdai" and add RPC info below for xDai chain.
     cacheProvider: true, // optional
     theme: "light", // optional. Change to "dark" for a dark theme.
     providerOptions: {

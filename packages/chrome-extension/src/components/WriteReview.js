@@ -3,6 +3,7 @@ import {
   useContractLoader,
   // useEthersAdaptorFromProviderOrSigners
   // useBurnerSigner,
+  useBalance,
   useGasPrice,
   useUserProviderAndSigner
   // useEthersContext
@@ -18,8 +19,9 @@ const { ethers } = require("ethers");
 
 
 const web3Modal = Web3ModalSetup();
+const localProviderPollingTime = 30000;
+const USE_BURNER_WALLET = true; // true;
 
-const USE_BURNER_WALLET = true;
 
 const WriteReview = ({
   rows,
@@ -42,8 +44,8 @@ const WriteReview = ({
   /** @todo: support non-burner signer */
   // const userSigner = useBurnerSigner(localProvider);
   const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET);
-  console.log(userProviderAndSigner);
   const userSigner = userProviderAndSigner.signer;
+  const [tx, setTx] = useState();
   // const userSigner = useEthersAdaptorFromProviderOrSigners(injectedProvider);
 
   // const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
@@ -54,8 +56,9 @@ const WriteReview = ({
 
 
 
-  const [content, setContent] = React.useState("");
-  const [isLoading, setIsLoading] = React.useState(false);
+  // const [content, setContent] = React.useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [address, setAddress] = useState("");
   /**
    * Review input values
    */
@@ -65,12 +68,12 @@ const WriteReview = ({
   const [assetHash, setAssetHash] = useState("0x46d15ccfc1375e658fd0d59c1be93ac5b7350b43");
   const [assetId, setAssetId] = useState("171");
   const [owned, setOwned] = useState(false);
-  const gasPrice = useGasPrice(targetNetwork, "fast", 30000);
-  console.log("GASSSS", gasPrice);
+  const gasPrice = useGasPrice(targetNetwork, "fast", localProviderPollingTime);
+  console.log("gasPrice", gasPrice);
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
-  console.log("writeContrats :", userSigner, contractConfig, localChainId )
-  const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
+  const writeContracts = useContractLoader(userProviderAndSigner.signer, contractConfig, localChainId);
+  const yourLocalBalance = useBalance(localProvider, address, localProviderPollingTime);
 
   const logoutOfWeb3Modal = async () => {
       await web3Modal.clearCachedProvider();
@@ -115,25 +118,26 @@ const WriteReview = ({
     }
   }, [loadWeb3Modal]);
 
-//   useEffect(() => {
-//     async function getAddress() {
-//         if (userSigner) {
-//             const newAddress = await userSigner.getAddress();
-//             setAddress(newAddress);
-//         }
-//     }
-//     getAddress();
-// }, [userSigner]);
-
-  const setFormattedContent = React.useCallback(
-    (text) => {
-      setContent(text.slice(0, limit));
-    },
-    [limit, setContent]
-  );
+  useEffect(() => {
+    let getAddress = async() => {
+        if (userSigner) {
+            console.log("USER SIGNER");
+            console.log(userSigner);
+            const newAddress = userSigner.getAddress();
+            setAddress(newAddress);
+            console.log("New address:", address);
+            setTx(Transactor(userSigner, gasPrice));
+        }
+    }
+    getAddress();
+  }, [userSigner]);
+  useEffect(() => {
+    console.log("writeContracts change")
+    console.log(userSigner, contractConfig, localChainId );
+    console.log(writeContracts)
+  }, [writeContracts]);
 
   const postToContract = async () => {
-    const tx = Transactor(userSigner, gasPrice);
     console.log("postToContract writeContracts -->", writeContracts);
     const createTx = writeContracts.HumbleOpinion.create(
       newReview,
@@ -190,6 +194,7 @@ const WriteReview = ({
       <div style={{ padding: 20 }}>
         <Button onClick={() => loadWeb3Modal()}>Connect</Button>
         <Button onClick={() => logoutOfWeb3Modal()}>Logout</Button>
+        <p>Balance: {yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "?" }</p>
         {/* <textarea
           rows={rows}
           cols={cols}

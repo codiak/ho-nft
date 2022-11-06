@@ -161,7 +161,7 @@ function App(props) {
     // If you want to make 🔐 write transactions to your contracts, use the userSigner:
     const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
     console.log("writeContracts params", userSigner, contractConfig, localChainId);
-    console.log('writeContracts', writeContracts);
+    console.log("writeContracts", writeContracts);
     // EXTERNAL CONTRACT EXAMPLE:
     //
     // If you want to bring in the mainnet DAI contract it would look like:
