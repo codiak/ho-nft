@@ -94,6 +94,7 @@ const WriteReview = ({
   );
 
   const postToContract = async () => {
+    console.log(writeContracts.HumbleOpinion);
     const createTx = writeContracts.HumbleOpinion.create(
       newReview,
       owned,
@@ -203,7 +204,7 @@ const WriteReview = ({
           Submit Review
         </button> */}
         <Button type="primary" shape="round" onClick={createReview}
-          disabled={content.length === 0 || isLoading}>
+          disabled={newReview.length === 0 || isLoading}>
           Submit Review
         </Button>
       </div>
