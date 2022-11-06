@@ -1,8 +1,9 @@
 import "regenerator-runtime/runtime";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import * as ReactDOMClient from "react-dom/client";
 import WriteReview from "../components/WriteReview";
 import { NETWORKS } from "../components/constants";
+import { fetchGReviews } from "../api";
 
 // Set network here!
 const initialNetwork = NETWORKS.goerli;
@@ -14,7 +15,6 @@ var nftTokenAddress = "";
 var nftTokenId = "";
 
 const injectReviewForm = async (address, id) => {
-
   console.log("injecting review form");
   const container = document
     .querySelector(".TradeStation--main")
@@ -33,7 +33,42 @@ const injectReviewForm = async (address, id) => {
       targetNetwork={targetNetwork}
     />
   );
-  console.log("review form injected");
+
+  console.log("fetching reviews:");
+  // grabs the area where people bid (most visibility), add our reviews immediately under it
+  var biddingArea = document.querySelector(".TradeStation--main");
+  // don't process if there are no reviews
+  const fetchReviews = await fetchGReviews(chainId, address, id);
+  console.log("fetched review: ", fetchReviews);
+  for (let i = 0; i < fetchReviews.length; i++) {
+    const review = fetchReviews[i];
+    console.log("review: ", review);
+    const reviewsHtml = buildReviewsHtml(review);
+    container.insertAdjacentHTML("afterend", reviewsHtml);
+  }
+  console.log("done fetching reviews");
+};
+
+const buildReviewsHtml = ({ createdAt, userName, sender, rating, review }) => {
+  let html = `
+    <div class="Blockreact__Block-sc-1xf18x6-0 TradeStationreact__TimerContainer-sc-o1vm2f-1 elqhCm FFCYS TradeStation--header">
+      <div class="Blockreact__Block-sc-1xf18x6-0 Flexreact__Flex-sc-1twd32i-0 SpaceBetweenreact__SpaceBetween-sc-jjxyhg-0 jffCaG jYqxGr gJwgfT">
+        <div class="Blockreact__Block-sc-1xf18x6-0 Flexreact__Flex-sc-1twd32i-0 elqhCm jYqxGr">
+          <div display="inline" class="Blockreact__Block-sc-1xf18x6-0 iiEhTQ">
+            <span class="Blockreact__Block-sc-1xf18x6-0 Textreact__Text-sc-1w94ul3-0 gLefxh iZsJOf">${createdAt}&nbsp;&nbsp;${rating}</span>
+            <span class="Blockreact__Block-sc-1xf18x6-0 Textreact__Text-sc-1w94ul3-0 gLefxh iZsJOf"><a class="styles__StyledLink-sc-l6elh8-0 hubhNL Blockreact__Block-sc-1xf18x6-0 laCjUo AccountLink--ellipsis-overflow" href="${sender}">${userName}</a></span><br/></br/>
+            <span class="Blockreact__Block-sc-1xf18x6-0 Textreact__Text-sc-1w94ul3-0 gLefxh iZsJOf">${review}</span><br/><br/>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  return html;
+};
+
+const injectReviews = async (chainId, address, id) => {
+  console.log("fetching reviews for: ", chainId, address, id);
+  const fetchReviews = await fetchGReviews(chainId, address, id);
+  console.log("fetched review: ", fetchReviews);
 };
 
 // extract NFT address and id from link

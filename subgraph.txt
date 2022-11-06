@@ -1,0 +1,10 @@
+graph init --index-events
+
+graph codegen
+
+graph auth --product hosted-service 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
+
+
+graph deploy --product hosted-service ameer-clara/honft-test
+
+graph codegen && graph build
