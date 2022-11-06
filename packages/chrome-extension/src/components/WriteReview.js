@@ -1,6 +1,20 @@
-import React, { useState } from "react";
-
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  useContractLoader,
+  // useEthersAdaptorFromProviderOrSigners,
+  useBurnerSigner,
+} from "eth-hooks";
+import useStaticJsonRPC from "../hooks/useStaticJsonRPC.js";
 import { Button, Form, Input, Rate } from "antd";
+// todo: reference fresh deployedContracts
+// import deployedContracts from "../../../hardhat/contracts/hardhat_contracts.json";
+import HARDCODED_CONTRACT_CONFIG from "./contract_config.js";
+import Web3ModalSetup from "./Web3ModalSetup.js";
+
+
+const web3Modal = Web3ModalSetup();
+
+const USE_BURNER_WALLET = true;
 
 const WriteReview = ({
   rows,
@@ -9,7 +23,29 @@ const WriteReview = ({
   chainId,
   nftTokenAddress,
   nftTokenId,
+  targetNetwork,
 }) => {
+  // Write contracts
+
+  const [injectedProvider, setInjectedProvider] = useState();
+
+  // configure process.env.REACT_APP_PROVIDER for local???
+  const localProvider = useStaticJsonRPC([ targetNetwork.rpcUrl ]);
+  const localChainId = localProvider && localProvider._network && localProvider._network.chainId;
+  // const userProviderAndSigner = useEthersAdaptorFromProviderOrSigners(injectedProvider, localProvider, USE_BURNER_WALLET);
+  // const userSigner = userProviderAndSigner.signer;
+  /** @todo: support non-burner signer */
+  const userSigner = useBurnerSigner(localProvider);
+
+  // const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
+  const contractConfig = HARDCODED_CONTRACT_CONFIG;
+
+  // const readContracts = useContractLoader(localProvider, contractConfig);
+  // If you want to make 🔐 write transactions to your contracts, use the userSigner:
+  const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
+
+
+
   const [content, setContent] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
   /**
@@ -22,6 +58,34 @@ const WriteReview = ({
   const [assetId, setAssetId] = useState("171");
   const [owned, setOwned] = useState(false);
 
+  const loadWeb3Modal = useCallback(async () => {
+      const provider = await web3Modal.connect();
+      setInjectedProvider(new ethers.providers.Web3Provider(provider));
+
+      provider.on("chainChanged", chainId => {
+          console.log(`chain changed to ${chainId}! updating providers`);
+          setInjectedProvider(new ethers.providers.Web3Provider(provider));
+      });
+
+      provider.on("accountsChanged", () => {
+          console.log(`account changed!`);
+          setInjectedProvider(new ethers.providers.Web3Provider(provider));
+      });
+
+      // Subscribe to session disconnection
+      provider.on("disconnect", (code, reason) => {
+          console.log(code, reason);
+          logoutOfWeb3Modal();
+      });
+      // eslint-disable-next-line
+  }, [setInjectedProvider]);
+
+  useEffect(() => {
+    if (web3Modal.cachedProvider) {
+        loadWeb3Modal();
+    }
+  }, [loadWeb3Modal]);
+
   const setFormattedContent = React.useCallback(
     (text) => {
       setContent(text.slice(0, limit));
@@ -29,9 +93,37 @@ const WriteReview = ({
     [limit, setContent]
   );
 
-  const createReview = async (e) => {
+  const postToContract = async () => {
+    const createTx = writeContracts.HumbleOpinion.create(
+      newReview,
+      owned,
+      assetHash,
+      assetId,
+      rating,
+      chainId,
+    );
+    console.log("awaiting metamask/web3 confirm result...");
+    const result = await tx(createTx, update => {
+        console.log("📡 Transaction Update:", update);
+        if (update && (update.status === "confirmed" || update.status === 1)) {
+            console.log(" 🍾 Transaction " + update.hash + " finished!");
+            console.log(
+                " ⛽️ " +
+                    update.gasUsed +
+                    "/" +
+                    (update.gasLimit || update.gas) +
+                    " @ " +
+                    parseFloat(update.gasPrice) / 1000000000 +
+                    " gwei",
+            );
+        }
+    });
+    console.log(result);
+  };
+
+  const createReview = async () => {
     try {
-      e.preventDefault();
+      // e.preventDefault();
       setIsLoading(true);
       console.log(
         "before submit create review: ",
@@ -41,6 +133,7 @@ const WriteReview = ({
         nftTokenId
       );
       // await submitReview(chainId, nftTokenAddress, nftTokenId, content);
+      await postToContract();
       setIsLoading(false);
     } catch {
       setIsLoading(false);

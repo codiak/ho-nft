@@ -1,5 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack");
 const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
@@ -18,9 +19,9 @@ module.exports = {
         use: {
           loader: "babel-loader",
           options: {
-            presets: ["@babel/preset-env", "@babel/preset-react"],
+            presets: ["@babel/preset-react"],
           },
-        },
+        }
       },
       {
         test: /\.css$/,
@@ -54,5 +55,17 @@ module.exports = {
         },
       ],
     }),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    }),
   ],
+  resolve: {
+    // polyfills
+    fallback: {
+      "stream": require.resolve("stream-browserify"),
+      "http": require.resolve("stream-http"),
+      "https": require.resolve("https-browserify"),
+      "os": require.resolve("os-browserify/browser")
+    }
+  }
 };

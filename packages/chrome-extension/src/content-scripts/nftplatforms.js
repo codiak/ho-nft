@@ -1,13 +1,20 @@
 import "regenerator-runtime/runtime";
-import React from "react";
+import React, {useState} from "react";
 import * as ReactDOMClient from "react-dom/client";
 import WriteReview from "../components/WriteReview";
+import { NETWORKS } from "../components/constants";
 
+// Set network here!
+const initialNetwork = NETWORKS.goerli;
+
+const selectedNetwork = initialNetwork.name;
+const targetNetwork = NETWORKS[selectedNetwork];
 var chainId = 0;
 var nftTokenAddress = "";
 var nftTokenId = "";
 
 const injectReviewForm = async (address, id) => {
+
   console.log("injecting review form");
   const container = document
     .querySelector(".TradeStation--main")
@@ -23,6 +30,7 @@ const injectReviewForm = async (address, id) => {
       chainId={chainId}
       nftTokenAddress={nftTokenAddress}
       nftTokenId={nftTokenId}
+      targetNetwork={targetNetwork}
     />
   );
   console.log("review form injected");
