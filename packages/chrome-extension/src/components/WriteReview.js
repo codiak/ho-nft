@@ -41,7 +41,8 @@ const WriteReview = ({
   /** @todo: support non-burner signer */
   // const userSigner = useBurnerSigner(localProvider);
   const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET);
-  const userSigner = userProviderAndSigner.userSigner;
+  console.log(userProviderAndSigner);
+  const userSigner = userProviderAndSigner.signer;
   // const userSigner = useEthersAdaptorFromProviderOrSigners(injectedProvider);
 
   // const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
@@ -49,7 +50,6 @@ const WriteReview = ({
 
   // const readContracts = useContractLoader(localProvider, contractConfig);
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
-  const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
 
 
 
@@ -67,6 +67,11 @@ const WriteReview = ({
   const gasPrice = useGasPrice(targetNetwork, "fast", 30000);
 
   const tx = Transactor(userSigner, gasPrice);
+
+  // If you want to make 🔐 write transactions to your contracts, use the userSigner:
+  console.log("writeContrats :",userSigner, contractConfig, localChainId )
+  const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
+
 
   const loadWeb3Modal = useCallback(async () => {
       console.log("LoadWeb3Modal running callback...");
