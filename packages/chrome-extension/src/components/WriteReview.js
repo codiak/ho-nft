@@ -14,6 +14,7 @@ import { Button, Form, Input, Rate } from "antd";
 import HARDCODED_CONTRACT_CONFIG from "./contract_config.js";
 import Web3ModalSetup from "./Web3ModalSetup.js";
 import Transactor from "./Transactor.js";
+const { ethers } = require("ethers");
 
 
 const web3Modal = Web3ModalSetup();
@@ -65,13 +66,25 @@ const WriteReview = ({
   const [assetId, setAssetId] = useState("171");
   const [owned, setOwned] = useState(false);
   const gasPrice = useGasPrice(targetNetwork, "fast", 30000);
-
-  const tx = Transactor(userSigner, gasPrice);
+  console.log("GASSSS", gasPrice);
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
-  console.log("writeContrats :",userSigner, contractConfig, localChainId )
+  console.log("writeContrats :", userSigner, contractConfig, localChainId )
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
 
+  const logoutOfWeb3Modal = async () => {
+      await web3Modal.clearCachedProvider();
+      if (
+          injectedProvider &&
+          injectedProvider.provider &&
+          typeof injectedProvider.provider.disconnect == "function"
+      ) {
+          await injectedProvider.provider.disconnect();
+      }
+      setTimeout(() => {
+          window.location.reload();
+      }, 1);
+  };
 
   const loadWeb3Modal = useCallback(async () => {
       console.log("LoadWeb3Modal running callback...");
@@ -102,15 +115,15 @@ const WriteReview = ({
     }
   }, [loadWeb3Modal]);
 
-  useEffect(() => {
-    async function getAddress() {
-        if (userSigner) {
-            const newAddress = await userSigner.getAddress();
-            setAddress(newAddress);
-        }
-    }
-    getAddress();
-}, [userSigner]);
+//   useEffect(() => {
+//     async function getAddress() {
+//         if (userSigner) {
+//             const newAddress = await userSigner.getAddress();
+//             setAddress(newAddress);
+//         }
+//     }
+//     getAddress();
+// }, [userSigner]);
 
   const setFormattedContent = React.useCallback(
     (text) => {
@@ -120,6 +133,7 @@ const WriteReview = ({
   );
 
   const postToContract = async () => {
+    const tx = Transactor(userSigner, gasPrice);
     console.log("postToContract writeContracts -->", writeContracts);
     const createTx = writeContracts.HumbleOpinion.create(
       newReview,
@@ -154,7 +168,7 @@ const WriteReview = ({
       setIsLoading(true);
       console.log(
         "before submit create review: ",
-        content,
+        newReview,
         chainId,
         nftTokenAddress,
         nftTokenId
@@ -174,6 +188,8 @@ const WriteReview = ({
       </style> */}
       {/* <link href="antd/dist/antd.css" rel="stylesheet" media="screen" /> */}
       <div style={{ padding: 20 }}>
+        <Button onClick={() => loadWeb3Modal()}>Connect</Button>
+        <Button onClick={() => logoutOfWeb3Modal()}>Logout</Button>
         {/* <textarea
           rows={rows}
           cols={cols}
@@ -194,7 +210,7 @@ const WriteReview = ({
               showCount
               maxLength={200}
               style={{ height: 120, resize: 'none' }}
-              onChange={value => setNewReview(value)}
+              onChange={e => setNewReview(e.target.value)}
               placeholder="Write your review..."
             />
         </Form.Item>
