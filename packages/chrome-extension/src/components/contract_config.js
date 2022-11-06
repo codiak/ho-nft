@@ -1,137 +1,221 @@
 // HARDCODED COPY FROM REACT APP
 export const HARDCODED_CONTRACT_CONFIG = {
   deployedContracts: {
-    5: {
-      goerli: {
-        name: "goerli",
-        chainId: "5",
-        contracts: {
-          HumbleOpinion: {
-            address: "0x92434dE86e2e56E52f969bc697AF3B177DC8b03E",
-            abi: [
+    "5": {
+      "goerli": {
+        "name": "goerli",
+        "chainId": "5",
+        "contracts": {
+          "HumbleOpinion": {
+            "address": "0x92434dE86e2e56E52f969bc697AF3B177DC8b03E",
+            "abi": [
               {
-                inputs: [],
-                stateMutability: "nonpayable",
-                type: "constructor",
+                "inputs": [],
+                "stateMutability": "nonpayable",
+                "type": "constructor"
               },
               {
-                anonymous: false,
-                inputs: [
+                "anonymous": false,
+                "inputs": [
                   {
-                    indexed: false,
-                    internalType: "address",
-                    name: "sender",
-                    type: "address",
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "sender",
+                    "type": "address"
                   },
                   {
-                    indexed: false,
-                    internalType: "string",
-                    name: "review",
-                    type: "string",
+                    "indexed": false,
+                    "internalType": "string",
+                    "name": "review",
+                    "type": "string"
                   },
                   {
-                    indexed: false,
-                    internalType: "uint256",
-                    name: "rating",
-                    type: "uint256",
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "rating",
+                    "type": "uint256"
                   },
                   {
-                    indexed: false,
-                    internalType: "string",
-                    name: "assetHash",
-                    type: "string",
+                    "indexed": false,
+                    "internalType": "string",
+                    "name": "assetHash",
+                    "type": "string"
                   },
                   {
-                    indexed: false,
-                    internalType: "string",
-                    name: "assetId",
-                    type: "string",
+                    "indexed": false,
+                    "internalType": "string",
+                    "name": "assetId",
+                    "type": "string"
                   },
                   {
-                    indexed: false,
-                    internalType: "uint256",
-                    name: "chainId",
-                    type: "uint256",
-                  },
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "chainId",
+                    "type": "uint256"
+                  }
                 ],
-                name: "NewReview",
-                type: "event",
+                "name": "NewReview",
+                "type": "event"
               },
               {
-                inputs: [
-                  { internalType: "string", name: "_text", type: "string" },
-                  { internalType: "bool", name: "_owned", type: "bool" },
+                "inputs": [
                   {
-                    internalType: "string",
-                    name: "_assetHash",
-                    type: "string",
+                    "internalType": "string",
+                    "name": "_text",
+                    "type": "string"
                   },
-                  { internalType: "string", name: "_assetId", type: "string" },
-                  { internalType: "uint256", name: "_rating", type: "uint256" },
                   {
-                    internalType: "uint256",
-                    name: "_chainId",
-                    type: "uint256",
+                    "internalType": "bool",
+                    "name": "_owned",
+                    "type": "bool"
                   },
+                  {
+                    "internalType": "string",
+                    "name": "_assetHash",
+                    "type": "string"
+                  },
+                  {
+                    "internalType": "string",
+                    "name": "_assetId",
+                    "type": "string"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "_rating",
+                    "type": "uint256"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "_chainId",
+                    "type": "uint256"
+                  }
                 ],
-                name: "create",
-                outputs: [],
-                stateMutability: "nonpayable",
-                type: "function",
+                "name": "create",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
               },
               {
-                inputs: [
-                  { internalType: "uint256", name: "_index", type: "uint256" },
-                ],
-                name: "get",
-                outputs: [
-                  { internalType: "uint256", name: "id", type: "uint256" },
-                  { internalType: "address", name: "author", type: "address" },
-                  { internalType: "string", name: "text", type: "string" },
-                  { internalType: "uint256", name: "rating", type: "uint256" },
-                  { internalType: "string", name: "assetHash", type: "string" },
-                  { internalType: "string", name: "assetId", type: "string" },
-                  { internalType: "uint256", name: "chainId", type: "uint256" },
-                ],
-                stateMutability: "view",
-                type: "function",
-              },
-              {
-                inputs: [],
-                name: "reviewCount",
-                outputs: [
-                  { internalType: "uint256", name: "", type: "uint256" },
-                ],
-                stateMutability: "view",
-                type: "function",
-              },
-              {
-                inputs: [
-                  { internalType: "uint256", name: "", type: "uint256" },
-                ],
-                name: "reviews",
-                outputs: [
-                  { internalType: "uint256", name: "id", type: "uint256" },
-                  { internalType: "string", name: "text", type: "string" },
+                "inputs": [
                   {
-                    internalType: "bool",
-                    name: "ownerWhenReviewed",
-                    type: "bool",
-                  },
-                  { internalType: "address", name: "author", type: "address" },
-                  { internalType: "string", name: "assetHash", type: "string" },
-                  { internalType: "string", name: "assetId", type: "string" },
-                  { internalType: "uint256", name: "rating", type: "uint256" },
-                  { internalType: "uint256", name: "chainId", type: "uint256" },
+                    "internalType": "uint256",
+                    "name": "_index",
+                    "type": "uint256"
+                  }
                 ],
-                stateMutability: "view",
-                type: "function",
+                "name": "get",
+                "outputs": [
+                  {
+                    "internalType": "uint256",
+                    "name": "id",
+                    "type": "uint256"
+                  },
+                  {
+                    "internalType": "address",
+                    "name": "author",
+                    "type": "address"
+                  },
+                  {
+                    "internalType": "string",
+                    "name": "text",
+                    "type": "string"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "rating",
+                    "type": "uint256"
+                  },
+                  {
+                    "internalType": "string",
+                    "name": "assetHash",
+                    "type": "string"
+                  },
+                  {
+                    "internalType": "string",
+                    "name": "assetId",
+                    "type": "string"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "chainId",
+                    "type": "uint256"
+                  }
+                ],
+                "stateMutability": "view",
+                "type": "function"
               },
-            ],
-          },
-        },
-      },
-    },
+              {
+                "inputs": [],
+                "name": "reviewCount",
+                "outputs": [
+                  {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                  }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+              },
+              {
+                "inputs": [
+                  {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                  }
+                ],
+                "name": "reviews",
+                "outputs": [
+                  {
+                    "internalType": "uint256",
+                    "name": "id",
+                    "type": "uint256"
+                  },
+                  {
+                    "internalType": "string",
+                    "name": "text",
+                    "type": "string"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "ownerWhenReviewed",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "address",
+                    "name": "author",
+                    "type": "address"
+                  },
+                  {
+                    "internalType": "string",
+                    "name": "assetHash",
+                    "type": "string"
+                  },
+                  {
+                    "internalType": "string",
+                    "name": "assetId",
+                    "type": "string"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "rating",
+                    "type": "uint256"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "chainId",
+                    "type": "uint256"
+                  }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+              }
+            ]
+          }
+        }
+      }
+    }
   },
   externalContracts: {
     1: {

@@ -27,6 +27,12 @@ module.exports = {
         test: /\.css$/,
         use: ["css-loader"],
       },
+      { // webpack5esmInteropRule
+        test: /\.m?js/,
+        resolve: {
+          fullySpecified: false
+        }
+      },
     ],
   },
   plugins: [

@@ -1,8 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
   useContractLoader,
-  // useEthersAdaptorFromProviderOrSigners,
-  useBurnerSigner,
+  // useEthersAdaptorFromProviderOrSigners
+  // useBurnerSigner,
+  useGasPrice,
+  useUserProviderAndSigner
+  // useEthersContext
 } from "eth-hooks";
 import useStaticJsonRPC from "../hooks/useStaticJsonRPC.js";
 import { Button, Form, Input, Rate } from "antd";
@@ -10,6 +13,7 @@ import { Button, Form, Input, Rate } from "antd";
 // import deployedContracts from "../../../hardhat/contracts/hardhat_contracts.json";
 import HARDCODED_CONTRACT_CONFIG from "./contract_config.js";
 import Web3ModalSetup from "./Web3ModalSetup.js";
+import Transactor from "./Transactor.js";
 
 
 const web3Modal = Web3ModalSetup();
@@ -35,7 +39,10 @@ const WriteReview = ({
   // const userProviderAndSigner = useEthersAdaptorFromProviderOrSigners(injectedProvider, localProvider, USE_BURNER_WALLET);
   // const userSigner = userProviderAndSigner.signer;
   /** @todo: support non-burner signer */
-  const userSigner = useBurnerSigner(localProvider);
+  // const userSigner = useBurnerSigner(localProvider);
+  const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET);
+  const userSigner = userProviderAndSigner.userSigner;
+  // const userSigner = useEthersAdaptorFromProviderOrSigners(injectedProvider);
 
   // const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
   const contractConfig = HARDCODED_CONTRACT_CONFIG;
@@ -57,8 +64,12 @@ const WriteReview = ({
   const [assetHash, setAssetHash] = useState("0x46d15ccfc1375e658fd0d59c1be93ac5b7350b43");
   const [assetId, setAssetId] = useState("171");
   const [owned, setOwned] = useState(false);
+  const gasPrice = useGasPrice(targetNetwork, "fast", 30000);
+
+  const tx = Transactor(userSigner, gasPrice);
 
   const loadWeb3Modal = useCallback(async () => {
+      console.log("LoadWeb3Modal running callback...");
       const provider = await web3Modal.connect();
       setInjectedProvider(new ethers.providers.Web3Provider(provider));
 
@@ -86,6 +97,16 @@ const WriteReview = ({
     }
   }, [loadWeb3Modal]);
 
+  useEffect(() => {
+    async function getAddress() {
+        if (userSigner) {
+            const newAddress = await userSigner.getAddress();
+            setAddress(newAddress);
+        }
+    }
+    getAddress();
+}, [userSigner]);
+
   const setFormattedContent = React.useCallback(
     (text) => {
       setContent(text.slice(0, limit));
@@ -94,7 +115,7 @@ const WriteReview = ({
   );
 
   const postToContract = async () => {
-    console.log(writeContracts.HumbleOpinion);
+    console.log("postToContract writeContracts -->", writeContracts);
     const createTx = writeContracts.HumbleOpinion.create(
       newReview,
       owned,
